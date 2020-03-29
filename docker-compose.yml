@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  gamepublisherapi:
+    container_name: gamepublisherapi
+    env_file:
+     - api.env
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+     - "5000:80"
