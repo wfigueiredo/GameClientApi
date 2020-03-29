@@ -1,6 +1,5 @@
 using GameProducer.Domain.Model;
 using GameProducer.Interfaces.Clients;
-using GameProducer.Interfaces.Clients.AWS;
 using GameProducer.Interfaces.Services;
 using GameProducer.Interfaces.Services.Impl;
 using GameProducer.Interfaces.Strategy;

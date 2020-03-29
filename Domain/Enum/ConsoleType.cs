@@ -14,7 +14,7 @@ namespace GameProducer.Domain.Enum
         PS4,
 
         [EnumMember]
-        [Display(Name = "xone")]
+        [Display(Name = "xbox")]
         XboxOne,
 
         [EnumMember]
