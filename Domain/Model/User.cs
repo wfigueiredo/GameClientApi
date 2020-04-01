@@ -3,7 +3,8 @@ namespace GameProducer.Domain.Model
 {
     public class User : BasePayload
     {
-        public string Name { get; set; }
-        public string Email { get; set; }
+        public string name { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
     }
 }

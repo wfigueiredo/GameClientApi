@@ -10,7 +10,7 @@ namespace GameProducer.Interfaces.Validators
         public void Validate(Game g, params string[] p)
         {
             if (EnumUtil.GetDisplayName(DestinationType.Topic) == p[0] &&
-                !string.IsNullOrEmpty(g.console.GetDisplayName()))
+                !string.IsNullOrEmpty(g.consoleAbreviation.GetDisplayName()))
             {
                 throw new GenericApiException("Topic destination cannot specify console. Use 'queue' instead");
             }

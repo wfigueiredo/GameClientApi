@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GameProducer.Domain.Enum;
 using GameProducer.Domain.Model;
 using GameProducer.Interfaces.Clients;
@@ -29,7 +28,7 @@ namespace GameProducer.Interfaces.Services.Impl
 
         private string GetQueueName(BasePayload payloadType) => payloadType switch
         {
-            Game g => GetConsoleQueueName(g.console),
+            Game g => GetConsoleQueueName(g.consoleAbreviation),
             User _ => _config.GetValue<string>("AWS:SQS:Queues:User"),
             _ => throw new GenericApiException($"Unknown entity type")
         };
@@ -44,10 +43,7 @@ namespace GameProducer.Interfaces.Services.Impl
 
         public async Task publishToQueueAsync<T>(T content)
         {
-            
-
             var QueueName = GetQueueName(content as BasePayload);
-            
             await _sqsClient.publishAsync(QueueName, content);
         }
 

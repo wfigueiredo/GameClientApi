@@ -1,5 +1,6 @@
 using GameProducer.Domain.Model;
 using GameProducer.Interfaces.Clients;
+using GameProducer.Interfaces.Clients.Http;
 using GameProducer.Interfaces.Services;
 using GameProducer.Interfaces.Services.Impl;
 using GameProducer.Interfaces.Strategy;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using System;
 
 namespace GameProducer
 {
@@ -41,6 +43,15 @@ namespace GameProducer
                 });
             });
 
+            services.AddHttpContextAccessor();
+
+            // HTTP clients
+            var IGDBSection = Configuration.GetSection("Integration:IGDB");
+            services.AddHttpClient(IGDBSection["ClientName"], client => {
+                client.BaseAddress = new Uri(IGDBSection["Host"]);
+                client.DefaultRequestHeaders.Add("user-key", IGDBSection["ApiKey"]);
+            });
+
             // strategies (singleton)
             services.AddSingleton<PublishStrategyContext>();
             services.AddSingleton<PublishStrategy, QueuePublishStrategy>();
@@ -48,6 +59,7 @@ namespace GameProducer
             
             // services (singleton)
             services.AddSingleton<IPublisherService, PublisherService>();
+            services.AddSingleton<IGameService, GameService>();
 
             // validators (singleton)
             services.AddSingleton<IValidator<Game>, GameValidator>();
@@ -56,6 +68,7 @@ namespace GameProducer
             // clients (singleton)
             services.AddSingleton<SNSClient>();
             services.AddSingleton<SQSClient>();
+            services.AddSingleton<IGDBClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,7 +82,7 @@ namespace GameProducer
             app.UseHttpsRedirection();
             app.UseRouting();
             
-            app.Map($"/api/gamepublisher/v1", prefixedApp =>
+            app.Map($"/api/publisher/v1", prefixedApp =>
             {
                 prefixedApp.UseRouting();
                 prefixedApp.UseAuthorization();

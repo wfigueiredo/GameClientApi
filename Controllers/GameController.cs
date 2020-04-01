@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GameProducer.Domain.Infrastructure;
 using GameProducer.Domain.Model;
 using GameProducer.Interfaces.Error;
+using GameProducer.Interfaces.Services;
 using GameProducer.Interfaces.Strategy;
 using GameProducer.Interfaces.Validators;
 using GameProducer.Util;
@@ -19,13 +20,16 @@ namespace GameProducer.Controllers
         private readonly ILogger<GameController> _logger;
         private readonly PublishStrategyContext _publishStrategyContext;
         private readonly IValidator<Game> _validator;
+        private readonly IGameService _gameService;
 
         public GameController(ILogger<GameController> logger, 
             PublishStrategyContext publishStrategyContext,
-            IValidator<Game> validator)
+            IValidator<Game> validator,
+            IGameService gameService)
         {
             _logger = logger;
             _validator = validator;
+            _gameService = gameService;
             _publishStrategyContext = publishStrategyContext;
         }
 
@@ -36,9 +40,11 @@ namespace GameProducer.Controllers
         {
             try
             {
-                _validator.Validate(publishRequest.content, publishRequest.metadata.destinationType.GetDisplayName());
-                await _publishStrategyContext.Apply(publishRequest);
-                return StatusCode(StatusCodes.Status202Accepted, new { message = "Message in transit" });
+                var nextReleases = await _gameService.fetchWeekGameReleases();
+                return Ok(nextReleases);
+                //_validator.Validate(publishRequest.content, publishRequest.metadata.destinationType.GetDisplayName());
+                //await _publishStrategyContext.Apply(publishRequest);
+                //return StatusCode(StatusCodes.Status202Accepted, new { message = "Message in transit" });
             }
             catch (GenericApiException ex)
             {
