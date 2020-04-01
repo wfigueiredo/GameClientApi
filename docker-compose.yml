@@ -2,6 +2,7 @@ version: '3'
 
 services:
   gamepublisherapi:
+    image: wfigueiredo/gamepublisherapi:latest
     container_name: gamepublisherapi
     env_file:
      - api.env
