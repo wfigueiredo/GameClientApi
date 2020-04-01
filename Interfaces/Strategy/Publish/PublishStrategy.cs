@@ -8,6 +8,6 @@ namespace GameProducer.Interfaces.Strategy
 {
     public interface PublishStrategy
     {
-        Task Apply<T>(T type);
+        Task Apply<T>(IEnumerable<T> type);
     }
 }

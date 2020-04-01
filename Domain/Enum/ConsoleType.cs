@@ -15,7 +15,7 @@ namespace GameProducer.Domain.Enum
 
         [EnumMember]
         [Display(Name = "xone")]
-        XboxOne,
+        XOne,
 
         [EnumMember]
         [Display(Name = "switch")]

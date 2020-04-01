@@ -13,16 +13,15 @@ namespace GameProducer.Domain.Translators
         {
             if (release != null)
             {
-                System.Enum.TryParse(release.platform.abbreviation, true, out ConsoleType consoleType);
+                System.Enum.TryParse(release.platform.abbreviation.ToLower(), true, out ConsoleType consoleType);
                 return new Game()
                 {
-                    type = PayloadType.Game.GetDisplayName(),
                     externalId = release.game.id,
                     name = release.game.name,
                     summary = release.game.summary,
                     publisher = GetPublisherName(release.game.involved_companies),
                     releaseDate = release.date.FromUnixTimeStampToDateTime(),
-                    consoleAbreviation = consoleType,
+                    consoleAbbreviation = consoleType,
                     consoleName = release.platform.name
                 };
             }

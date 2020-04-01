@@ -2,6 +2,6 @@
 {
     public class BasePayload
     {
-        public string type { get; set; }
+        public virtual string type { get; set; }
     }
 }

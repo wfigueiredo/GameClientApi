@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GameProducer.Domain.Infrastructure;
 using GameProducer.Domain.Model;
@@ -7,7 +8,6 @@ using GameProducer.Interfaces.Error;
 using GameProducer.Interfaces.Services;
 using GameProducer.Interfaces.Strategy;
 using GameProducer.Interfaces.Validators;
-using GameProducer.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -36,15 +36,20 @@ namespace GameProducer.Controllers
         [HttpPost("game/publish")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        public async Task<IActionResult> PublishInfo([FromBody] PublishRequest<Game> publishRequest)
+        public async Task<IActionResult> PublishInfo()
         {
             try
             {
                 var nextReleases = await _gameService.fetchWeekGameReleases();
-                return Ok(nextReleases);
-                //_validator.Validate(publishRequest.content, publishRequest.metadata.destinationType.GetDisplayName());
-                //await _publishStrategyContext.Apply(publishRequest);
-                //return StatusCode(StatusCodes.Status202Accepted, new { message = "Message in transit" });
+                var PublishRequest = new PublishRequest<Game>()
+                {
+                    content = nextReleases,
+                    metadata = new Domain.Metadata() { 
+                        destinationType = DestinationType.Queue 
+                    }
+                };
+                await _publishStrategyContext.Apply(PublishRequest);
+                return StatusCode(StatusCodes.Status202Accepted, new { message = "Message(s) in transit" });
             }
             catch (GenericApiException ex)
             {

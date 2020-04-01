@@ -3,10 +3,12 @@ using GameProducer.Domain.Model;
 using GameProducer.Interfaces.Error;
 using GameProducer.Interfaces.Strategy;
 using GameProducer.Interfaces.Validators;
+using GameProducer.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GameProducer.Controllers
@@ -32,9 +34,10 @@ namespace GameProducer.Controllers
         {
             try
             {
-                _validator.Validate(publishRequest.content);
+                var User = Enumerable.ToList(publishRequest.content).FirstOrDefault();
+                _validator.Validate(User, publishRequest.metadata.destinationType.GetDisplayName());
                 await _publishStrategyContext.Apply(publishRequest);
-                return StatusCode(StatusCodes.Status202Accepted, new { message = "Message in transit" });
+                return StatusCode(StatusCodes.Status202Accepted, new { message = "Message(s) in transit" });
             }
             catch (GenericApiException ex)
             {

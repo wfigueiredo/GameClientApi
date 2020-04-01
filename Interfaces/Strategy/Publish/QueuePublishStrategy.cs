@@ -1,4 +1,5 @@
 ﻿using GameProducer.Interfaces.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GameProducer.Interfaces.Strategy
@@ -12,7 +13,7 @@ namespace GameProducer.Interfaces.Strategy
             _publisherService = publisherService;
         }
 
-        public async Task Apply<T>(T content)
+        public async Task Apply<T>(IEnumerable<T> content)
         {
             await _publisherService.publishToQueueAsync(content);
         }

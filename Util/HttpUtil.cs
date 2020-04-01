@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Net;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace GameProducer.Util
 {
     public class HttpUtil
+
     {
         public static bool IsSuccessStatusCode(HttpStatusCode httpStatusCode)
         {

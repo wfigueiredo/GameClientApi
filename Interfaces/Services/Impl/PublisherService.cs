@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using GameProducer.Domain.Enum;
 using GameProducer.Domain.Model;
 using GameProducer.Interfaces.Clients;
@@ -28,7 +29,7 @@ namespace GameProducer.Interfaces.Services.Impl
 
         private string GetQueueName(BasePayload payloadType) => payloadType switch
         {
-            Game g => GetConsoleQueueName(g.consoleAbreviation),
+            Game g => GetConsoleQueueName(g.consoleAbbreviation),
             User _ => _config.GetValue<string>("AWS:SQS:Queues:User"),
             _ => throw new GenericApiException($"Unknown entity type")
         };
@@ -36,15 +37,18 @@ namespace GameProducer.Interfaces.Services.Impl
         private string GetConsoleQueueName(ConsoleType consoleType) => consoleType switch
         {
             ConsoleType.PS4 => _config.GetValue<string>("AWS:SQS:Queues:PlayStation"),
-            ConsoleType.XboxOne => _config.GetValue<string>("AWS:SQS:Queues:Xbox"),
+            ConsoleType.XOne => _config.GetValue<string>("AWS:SQS:Queues:Xbox"),
             ConsoleType.Switch => _config.GetValue<string>("AWS:SQS:Queues:Switch"),
             _ => throw new GenericApiException($"Unknown Console type")
         };
 
-        public async Task publishToQueueAsync<T>(T content)
+        public async Task publishToQueueAsync<T>(IEnumerable<T> content)
         {
-            var QueueName = GetQueueName(content as BasePayload);
-            await _sqsClient.publishAsync(QueueName, content);
+            foreach (var item in content)
+            {
+                var QueueName = GetQueueName(item as BasePayload);
+                await _sqsClient.publishAsync(QueueName, item);
+            }
         }
 
         public async Task publishToTopicAsync<T>(T content)

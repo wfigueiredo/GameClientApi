@@ -16,7 +16,7 @@ namespace GameProducer.Interfaces.Strategy
             _publisherService = publisherService;
         }
 
-        public async Task Apply<T>(T content)
+        public async Task Apply<T>(IEnumerable<T> content)
         {
             await _publisherService.publishToTopicAsync(content);
         }
