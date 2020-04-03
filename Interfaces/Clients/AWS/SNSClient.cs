@@ -6,6 +6,7 @@ using GameProducer.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 using System.Threading.Tasks;
 
 namespace GameProducer.Interfaces.Clients
@@ -44,8 +45,12 @@ namespace GameProducer.Interfaces.Clients
 
         public async Task publishAsync<TMessage>(string TopicName, TMessage payload)
         {
+            if (payload == null)
+                throw new ArgumentNullException(nameof(payload));
+
             var TopicArn = await GetTopicArnAsync(TopicName);
-            var result = await _client.PublishAsync(TopicArn, JsonConvert.SerializeObject(payload));
+            var MessageBody = JsonConvert.SerializeObject(payload);
+            var result = await _client.PublishAsync(TopicArn, MessageBody);
 
             if (!HttpUtil.IsSuccessStatusCode(result.HttpStatusCode))
             {

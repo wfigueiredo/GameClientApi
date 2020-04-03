@@ -51,7 +51,8 @@ namespace GameProducer.Interfaces.Clients.Http
         {
             var From = DateTime.Now;
             var To = DateTimeUtil.GetNextWeekday(From, DayOfWeek.Monday);
-            var UnixTimeStampFrom = DateTimeUtil.FromDateTimeToUnixTimeStamp(From);
+            //var UnixTimeStampFrom = DateTimeUtil.FromDateTimeToUnixTimeStamp(From);
+            var UnixTimeStampFrom = 1585694617;
             var UnixTimeStampTo = DateTimeUtil.FromDateTimeToUnixTimeStamp(To);
 
             var IGDBSection = _config.GetSection("Integration:IGDB");

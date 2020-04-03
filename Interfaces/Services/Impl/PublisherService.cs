@@ -29,7 +29,7 @@ namespace GameProducer.Interfaces.Services.Impl
 
         private string GetQueueName(BasePayload payloadType) => payloadType switch
         {
-            Game g => GetConsoleQueueName(g.consoleAbbreviation),
+            Game g => GetConsoleQueueName(g.consoleType),
             User _ => _config.GetValue<string>("AWS:SQS:Queues:User"),
             _ => throw new GenericApiException($"Unknown entity type")
         };

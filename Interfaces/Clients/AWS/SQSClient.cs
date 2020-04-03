@@ -39,10 +39,12 @@ namespace GameProducer.Interfaces.Clients
 
         public async Task publishAsync<TMessage>(string QueueName, TMessage payload)
         {
-            if (payload == null) throw new ArgumentNullException(nameof(payload));
+            if (payload == null) 
+                throw new ArgumentNullException(nameof(payload));
 
             var QueueUrl = ComposeQueueUri(QueueName).AbsoluteUri;
-            var MessageRequest = new SendMessageRequest(QueueUrl, JsonConvert.SerializeObject(payload));
+            var MessageBody = JsonConvert.SerializeObject(payload);
+            var MessageRequest = new SendMessageRequest(QueueUrl, MessageBody);
 
             try
             {

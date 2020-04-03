@@ -12,7 +12,8 @@ namespace GameProducer.Domain.Model
         public string summary { get; set; }
         public string publisher { get; set; }
         public DateTime releaseDate { get; set; }
-        public ConsoleType consoleAbbreviation { get; set; }
+        public ConsoleType consoleType { get; set; }
+        public string consoleAbbreviation { get; set; }
         public string consoleName { get; set; }
     }
 }

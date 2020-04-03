@@ -7,7 +7,7 @@ using GameProducer.Domain.Enum;
 
 namespace GameProducer.Domain.Translators
 {
-    public static class GameTranslator
+    public static class EntityTranslator
     {
         public static Game ToDomain(this IGDBNextGameRelease release)
         {
@@ -21,7 +21,8 @@ namespace GameProducer.Domain.Translators
                     summary = release.game.summary,
                     publisher = GetPublisherName(release.game.involved_companies),
                     releaseDate = release.date.FromUnixTimeStampToDateTime(),
-                    consoleAbbreviation = consoleType,
+                    consoleType = consoleType,
+                    consoleAbbreviation = release.platform.abbreviation.ToLower(),
                     consoleName = release.platform.name
                 };
             }
