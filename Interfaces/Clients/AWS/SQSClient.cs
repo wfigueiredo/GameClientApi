@@ -2,8 +2,9 @@
 using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
+using GameProducer.Infrastructure.Contracts;
+using GameProducer.Infrastructure.Security;
 using GameProducer.Interfaces.Error;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -14,13 +15,13 @@ namespace GameProducer.Interfaces.Clients
     public class SQSClient
     {
         private readonly ILogger<SQSClient> _logger;
-        private readonly IConfiguration _config;
         private readonly AmazonSQSClient _client;
+        private readonly ISecretsManagerFacade _secretsManager;
 
-        public SQSClient(IConfiguration configuration, ILogger<SQSClient> logger)
+        public SQSClient(SecretsManagerFacade secretsManager, ILogger<SQSClient> logger)
         {
             _logger = logger;
-            _config = configuration;
+            _secretsManager = secretsManager;
             _client = CreateClient();
         }
 
@@ -28,13 +29,13 @@ namespace GameProducer.Interfaces.Clients
         {
             _logger.LogInformation("Creating SQSClient...");
 
-            var credentials = _config.GetSection("AWS");
-            var AwsCredentials = new BasicAWSCredentials(credentials["AccessKey"], credentials["SecretKey"]);
-            var Endpoint = RegionEndpoint.GetBySystemName(credentials["Region"]);
+            var awsCredentials = _secretsManager.GetObjectProperty<AwsCredentials>(SecretsManagerFacade.SECRET_NAME_AWS_CREDENTIALS);
+            var BasicAwsCredentials = new BasicAWSCredentials(awsCredentials.AccessKey, awsCredentials.SecretKey);
+            var Endpoint = RegionEndpoint.GetBySystemName(awsCredentials.Region);
             
             _logger.LogInformation("SQS Client created succesfully");
             
-            return new AmazonSQSClient(AwsCredentials, Endpoint);
+            return new AmazonSQSClient(BasicAwsCredentials, Endpoint);
         }
 
         public async Task publishAsync<TMessage>(string QueueName, TMessage payload)
@@ -42,18 +43,23 @@ namespace GameProducer.Interfaces.Clients
             if (payload == null) 
                 throw new ArgumentNullException(nameof(payload));
 
-            var QueueUrl = ComposeQueueUri(QueueName).AbsoluteUri;
-            var MessageBody = JsonConvert.SerializeObject(payload);
-            var MessageRequest = new SendMessageRequest(QueueUrl, MessageBody);
+            var queueUrl = ComposeQueueUri(QueueName).AbsoluteUri;
+            var messageBody = JsonConvert.SerializeObject(payload);
+            var messageRequest = new SendMessageRequest(queueUrl, messageBody);
+
+            if (queueUrl.EndsWith(".fifo"))
+            {
+                messageRequest.MessageGroupId = "publisherapi";
+            }
 
             try
             {
-                await _client.SendMessageAsync(MessageRequest);
-                _logger.LogInformation($"Successfully published message at queue at {QueueUrl}");
+                await _client.SendMessageAsync(messageRequest);
+                _logger.LogInformation($"Successfully published message at queue at {queueUrl}");
             }
             catch (Exception ex)
             {
-                var ErrorMessage = $"Failed to publish message at queue at {QueueUrl}";
+                var ErrorMessage = $"Failed to publish message at queue at {queueUrl}";
                 _logger.LogError(ErrorMessage);
                 throw new GenericApiException(ErrorMessage, ex.Message);
             }
@@ -61,10 +67,9 @@ namespace GameProducer.Interfaces.Clients
 
         private Uri ComposeQueueUri(string QueueName)
         {
-            var sqsConfig = _config.GetSection("AWS");
-            var Endpoint = RegionEndpoint.GetBySystemName(sqsConfig["Region"]).SystemName;
-            var AccountId = sqsConfig["AccountId"];
-            return new Uri($"https://sqs.{Endpoint}.amazonaws.com/{AccountId}/{QueueName}");
+            var awsCredentials = _secretsManager.GetObjectProperty<AwsCredentials>(SecretsManagerFacade.SECRET_NAME_AWS_CREDENTIALS);
+            var Endpoint = RegionEndpoint.GetBySystemName(awsCredentials.Region).SystemName;
+            return new Uri($"https://sqs.{Endpoint}.amazonaws.com/{awsCredentials.AccountId}/{QueueName}");
         }
     }
 }

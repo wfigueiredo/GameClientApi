@@ -4,6 +4,7 @@ using System.Linq;
 using GameProducer.Domain.DTO;
 using GameProducer.Domain.Model;
 using GameProducer.Domain.Enum;
+using GameProducer.Infrastructure.Extensions;
 
 namespace GameProducer.Domain.Translators
 {
@@ -37,11 +38,15 @@ namespace GameProducer.Domain.Translators
 
         private static string GetPublisherName(IEnumerable<IGDBInvolvedCompany> involved_companies)
         {
-            return involved_companies
-                .Select(c => new { c.publisher, c.company })
+            if (involved_companies.IsNullOrEmpty())
+                return string.Empty;
+
+            var publisher = involved_companies
+                .Select(x => new { x.publisher, x.company })
                 .Where(bundle => bundle.publisher)
-                .FirstOrDefault()
-                .company.name;
+                .FirstOrDefault();
+
+            return publisher?.company.name;
         }
     }
 }

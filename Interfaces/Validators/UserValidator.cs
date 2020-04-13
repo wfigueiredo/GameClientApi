@@ -9,7 +9,7 @@ namespace GameProducer.Interfaces.Validators
     {
         public void Validate(User u, params string[] p)
         {
-            if (EnumUtil.GetDisplayName(DestinationType.Topic) == p[0])
+            if (EnumExtensions.GetDisplayName(DestinationType.Topic) == p[0])
                 throw new GenericApiException("Invalid operation destination type. Use 'queue' instead");
 
             if (!HttpUtil.IsValidEmail(u.emailAddress))

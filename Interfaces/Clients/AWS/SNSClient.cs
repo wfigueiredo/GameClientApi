@@ -1,6 +1,8 @@
 ﻿using Amazon;
 using Amazon.Runtime;
 using Amazon.SimpleNotificationService;
+using GameProducer.Infrastructure.Contracts;
+using GameProducer.Infrastructure.Security;
 using GameProducer.Interfaces.Error;
 using GameProducer.Util;
 using Microsoft.Extensions.Configuration;
@@ -14,13 +16,13 @@ namespace GameProducer.Interfaces.Clients
     public class SNSClient
     {
         private readonly ILogger<SNSClient> _logger;
-        private readonly IConfiguration _config;
+        private readonly ISecretsManagerFacade _secretsManager;
         private readonly AmazonSimpleNotificationServiceClient _client;
 
-        public SNSClient(IConfiguration configuration, ILogger<SNSClient> logger)
+        public SNSClient(SecretsManagerFacade secretsManager, ILogger<SNSClient> logger)
         {
             _logger = logger;
-            _config = configuration;
+            _secretsManager = secretsManager;
             _client = CreateClient();
         }
 
@@ -28,13 +30,13 @@ namespace GameProducer.Interfaces.Clients
         {
             _logger.LogInformation("Creating SNSClient...");
 
-            var credentials = _config.GetSection("AWS");
-            var AwsCredentials = new BasicAWSCredentials(credentials["AccessKey"], credentials["SecretKey"]);
-            var Endpoint = RegionEndpoint.GetBySystemName(credentials["Region"]);
-            
+            var awsCredentials = _secretsManager.GetObjectProperty<AwsCredentials>(SecretsManagerFacade.SECRET_NAME_AWS_CREDENTIALS);
+            var BasicAwsCredentials = new BasicAWSCredentials(awsCredentials.AccessKey, awsCredentials.SecretKey);
+            var Endpoint = RegionEndpoint.GetBySystemName(awsCredentials.Region);
+
             _logger.LogInformation("SNS Client created succesfully");
 
-            return new AmazonSimpleNotificationServiceClient(AwsCredentials, Endpoint);
+            return new AmazonSimpleNotificationServiceClient(BasicAwsCredentials, Endpoint);
         }
 
         private async Task<string> GetTopicArnAsync(string topicName)

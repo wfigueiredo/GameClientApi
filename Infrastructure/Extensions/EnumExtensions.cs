@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace GameProducer.Util
 {
-    public static class EnumUtil
+    public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum enumType)
         {

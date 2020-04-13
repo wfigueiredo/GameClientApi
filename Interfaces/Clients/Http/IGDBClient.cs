@@ -14,6 +14,7 @@ namespace GameProducer.Interfaces.Clients.Http
         private readonly ILogger<IGDBClient> _logger;
         private readonly HttpClient _HttpClient;
         private readonly IHttpClientFactory _HttpClientFactory;
+        private readonly string IGDB_BASE_ADDRESS;
 
         public IGDBClient(IConfiguration config, ILogger<IGDBClient> logger, IHttpClientFactory httpClientFactory)
         {
@@ -21,6 +22,7 @@ namespace GameProducer.Interfaces.Clients.Http
             _logger = logger;
             _HttpClientFactory = httpClientFactory;
 
+            IGDB_BASE_ADDRESS = _config.GetValue<string>("Integration:IGDB:Host");
             var ClientName = _config.GetValue<string>("Integration:IGDB:ClientName");
             _HttpClient = _HttpClientFactory.CreateClient(ClientName);
         }
@@ -31,7 +33,7 @@ namespace GameProducer.Interfaces.Clients.Http
             var IGDBSection = _config.GetSection("Integration:IGDB");
 
             var Body = BuildNextReleaseGamesRequestBody();
-            var Address = IGDBSection["Host"] + IGDBSection["EndpointReleaseDates"];
+            var Address = $"{IGDB_BASE_ADDRESS}{IGDBSection["EndpointReleaseDates"]}";
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
@@ -51,7 +53,8 @@ namespace GameProducer.Interfaces.Clients.Http
         {
             var From = DateTime.Now;
             var To = DateTimeUtil.GetNextWeekday(From, DayOfWeek.Monday);
-            var UnixTimeStampFrom = DateTimeUtil.FromDateTimeToUnixTimeStamp(From);
+            //var UnixTimeStampFrom = DateTimeUtil.FromDateTimeToUnixTimeStamp(From);
+            var UnixTimeStampFrom = 1586044800;
             var UnixTimeStampTo = DateTimeUtil.FromDateTimeToUnixTimeStamp(To);
 
             var IGDBSection = _config.GetSection("Integration:IGDB");

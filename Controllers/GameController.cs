@@ -44,7 +44,7 @@ namespace GameProducer.Controllers
                 var PublishRequest = new PublishRequest<Game>()
                 {
                     content = nextReleases,
-                    metadata = new Domain.Metadata() { 
+                    metadata = new Domain.ModelMetadata() { 
                         destinationType = DestinationType.Queue 
                     }
                 };
