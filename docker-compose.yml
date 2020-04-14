@@ -1,9 +1,9 @@
-version: '3'
+version: '3.5'
 
 services:
-  gamepublisherapi:
-    image: wfigueiredo/gamepublisherapi:latest
-    container_name: gamepublisherapi
+  publisherapi:
+    image: wfigueiredo/publisherapi:latest
+    container_name: publisherapi
     env_file:
      - api.env
     build:
@@ -11,3 +11,31 @@ services:
       dockerfile: ./Dockerfile
     ports:
      - "5000:80"
+    networks:
+      - services-network
+    depends_on:
+     - postgres
+     
+  postgres:
+    container_name: c_postgres_publisherapi
+    image: postgres
+    environment:
+      - POSTGRES_DB=publisherapi
+      - POSTGRES_USER=pbadmin
+      - POSTGRES_PASSWORD=pbadmin2020
+      - TZ='GMT-3'
+      - PGTZ='GMT-3'
+    volumes:
+       - postgres_data:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - services-network
+    restart: unless-stopped
+    
+networks:
+  services-network:
+    driver: bridge
+    
+volumes:  
+  postgres_data:
