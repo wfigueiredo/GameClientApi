@@ -1,6 +1,8 @@
 using GameProducer.Domain.Model;
+using GameProducer.Infrastructure.Contracts;
 using GameProducer.Infrastructure.Extensions;
 using GameProducer.Infrastructure.Security;
+using GameProducer.Infrastructure.Security.Impl;
 using GameProducer.Interfaces.Clients;
 using GameProducer.Interfaces.Clients.AWS;
 using GameProducer.Interfaces.Clients.Http;
@@ -77,8 +79,9 @@ namespace GameProducer
             services.AddSingleton<IPublisherService, PublisherService>();
             services.AddSingleton<IGameService, GameService>();
             services.AddSingleton<IJobService, JobService>();
-            //services.AddSingleton<ISecretsManagerFacade, SecretsManagerFacade>();
-            services.AddSingleton<SecretsManagerFacade>();
+            services.AddSingleton<ICredentialsFacade<AwsCredentials>, AWSCredentialsFacade>();
+            services.AddSingleton<ICredentialsFacade<DBCredentials>, DBCredentialsFacade>();
+            services.AddSingleton<ISecretsManagerFacade, SecretsManagerFacade>();
 
             // validators (singleton)
             services.AddSingleton<IValidator<Game>, GameValidator>();

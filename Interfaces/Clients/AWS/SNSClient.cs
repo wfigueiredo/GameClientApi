@@ -5,7 +5,6 @@ using GameProducer.Infrastructure.Contracts;
 using GameProducer.Infrastructure.Security;
 using GameProducer.Interfaces.Error;
 using GameProducer.Util;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -16,13 +15,13 @@ namespace GameProducer.Interfaces.Clients
     public class SNSClient
     {
         private readonly ILogger<SNSClient> _logger;
-        private readonly ISecretsManagerFacade _secretsManager;
+        private readonly ICredentialsFacade<AwsCredentials> _credentialsFacade;
         private readonly AmazonSimpleNotificationServiceClient _client;
 
-        public SNSClient(SecretsManagerFacade secretsManager, ILogger<SNSClient> logger)
+        public SNSClient(ICredentialsFacade<AwsCredentials> credentialsFacade, ILogger<SNSClient> logger)
         {
             _logger = logger;
-            _secretsManager = secretsManager;
+            _credentialsFacade = credentialsFacade;
             _client = CreateClient();
         }
 
@@ -30,7 +29,7 @@ namespace GameProducer.Interfaces.Clients
         {
             _logger.LogInformation("Creating SNSClient...");
 
-            var awsCredentials = _secretsManager.GetObjectProperty<AwsCredentials>(SecretsManagerFacade.SECRET_NAME_AWS_CREDENTIALS);
+            var awsCredentials = _credentialsFacade.GetCredentials();
             var BasicAwsCredentials = new BasicAWSCredentials(awsCredentials.AccessKey, awsCredentials.SecretKey);
             var Endpoint = RegionEndpoint.GetBySystemName(awsCredentials.Region);
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GameProducer.Infrastructure.Extensions
+namespace GameProducer.Infrastructure.Contracts
 {
-    public static class IApplicationBuilderExtensions
+    public class DBCredentials : BasicCredentials
     {
     }
 }

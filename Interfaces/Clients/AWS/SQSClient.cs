@@ -5,6 +5,7 @@ using Amazon.SQS.Model;
 using GameProducer.Infrastructure.Contracts;
 using GameProducer.Infrastructure.Security;
 using GameProducer.Interfaces.Error;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -16,12 +17,12 @@ namespace GameProducer.Interfaces.Clients
     {
         private readonly ILogger<SQSClient> _logger;
         private readonly AmazonSQSClient _client;
-        private readonly ISecretsManagerFacade _secretsManager;
+        private readonly ICredentialsFacade<AwsCredentials> _credentialsFacade;
 
-        public SQSClient(SecretsManagerFacade secretsManager, ILogger<SQSClient> logger)
+        public SQSClient(ICredentialsFacade<AwsCredentials> credentialsFacade, ILogger<SQSClient> logger)
         {
             _logger = logger;
-            _secretsManager = secretsManager;
+            _credentialsFacade = credentialsFacade;
             _client = CreateClient();
         }
 
@@ -29,7 +30,7 @@ namespace GameProducer.Interfaces.Clients
         {
             _logger.LogInformation("Creating SQSClient...");
 
-            var awsCredentials = _secretsManager.GetObjectProperty<AwsCredentials>(SecretsManagerFacade.SECRET_NAME_AWS_CREDENTIALS);
+            var awsCredentials = _credentialsFacade.GetCredentials();
             var BasicAwsCredentials = new BasicAWSCredentials(awsCredentials.AccessKey, awsCredentials.SecretKey);
             var Endpoint = RegionEndpoint.GetBySystemName(awsCredentials.Region);
             
@@ -67,7 +68,7 @@ namespace GameProducer.Interfaces.Clients
 
         private Uri ComposeQueueUri(string QueueName)
         {
-            var awsCredentials = _secretsManager.GetObjectProperty<AwsCredentials>(SecretsManagerFacade.SECRET_NAME_AWS_CREDENTIALS);
+            var awsCredentials = _credentialsFacade.GetCredentials();
             var Endpoint = RegionEndpoint.GetBySystemName(awsCredentials.Region).SystemName;
             return new Uri($"https://sqs.{Endpoint}.amazonaws.com/{awsCredentials.AccountId}/{QueueName}");
         }

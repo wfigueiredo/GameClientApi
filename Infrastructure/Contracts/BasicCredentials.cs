@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace GameProducer.Infrastructure.Contracts
 {
     [DataContract]
-    public class GenericCredentials
+    public class BasicCredentials
     {
         [DataMember(Name = "username")]
         public string Username { get; set; }

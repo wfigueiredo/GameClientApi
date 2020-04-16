@@ -1,5 +1,6 @@
 ﻿using GameProducer.Infrastructure.Contracts;
 using GameProducer.Infrastructure.Security;
+using GameProducer.Infrastructure.Security.Impl;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
@@ -17,28 +18,13 @@ namespace GameProducer.Infrastructure.Extensions
             if (postgresConfig == null) 
                 throw new Exception("Cannot find database configuration section in appsettings.json");
 
-            var smd = provider.GetService<SecretsManagerFacade>();
-            return BuildPgsqlConnectionString(postgresConfig, smd);
+            var credentialsFacade = provider.GetService<ICredentialsFacade<DBCredentials>>();
+            return BuildPgsqlConnectionString(postgresConfig, credentialsFacade);
         });
 
-        private static NpgsqlConnectionStringBuilder BuildPgsqlConnectionString(IConfigurationSection postgresConfig, SecretsManagerFacade smc)
+        private static NpgsqlConnectionStringBuilder BuildPgsqlConnectionString(IConfigurationSection postgresConfig, ICredentialsFacade<DBCredentials> credentialsFacade)
         {
-            GenericCredentials GetSecretFromSecretsManagerAsync() =>
-                smc.GetObjectProperty<GenericCredentials>(SecretsManagerFacade.SECRET_NAME_RDS_CREDENTIALS);
-
-            GenericCredentials GetSecretFromAppsettings()
-            {
-                return new GenericCredentials 
-                { 
-                    Username = postgresConfig["username"], 
-                    Password = postgresConfig["password"] 
-                };
-            }
-
-            var credentials = 
-                GetSecretFromAppsettings() ?? 
-                GetSecretFromSecretsManagerAsync() ?? 
-                    throw new Exception("Could not retrieve connection string for PostgreSQL");
+            var credentials = credentialsFacade.GetCredentials();
 
             return new NpgsqlConnectionStringBuilder
             {
