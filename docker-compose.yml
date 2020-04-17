@@ -5,7 +5,7 @@ services:
     image: wfigueiredo/publisherapi:latest
     container_name: publisherapi
     env_file:
-     - api.env
+     - publisherapi.env
     build:
       context: ./
       dockerfile: ./Dockerfile
