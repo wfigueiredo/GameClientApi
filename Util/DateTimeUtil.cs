@@ -21,8 +21,8 @@ namespace GameProducer.Util
 
         public static DateTime GetNextWeekday(DateTime start, DayOfWeek day)
         {
-            int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
-            var TargetDate = start.AddDays(daysToAdd);
+            int daysToAdd = ((int)day - (int)start.DayOfWeek - 7) % 7;
+            var TargetDate = (daysToAdd != 0) ? start.AddDays(daysToAdd) : start.AddDays(7);
             var TargetDateTime = new DateTime(TargetDate.Year, TargetDate.Month, TargetDate.Day, 0, 0, 0);
             return GetDateTimeConvertedIntoDefaultTimeZone(TargetDateTime);
         }

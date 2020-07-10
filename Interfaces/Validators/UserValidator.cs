@@ -2,21 +2,23 @@
 using GameProducer.Domain.Model;
 using GameProducer.Interfaces.Error;
 using GameProducer.Util;
+using System.Threading.Tasks;
 
 namespace GameProducer.Interfaces.Validators
 {
     public class UserValidator : IValidator<User>
     {
-        public void Validate(User u, params string[] p)
+        public async Task<User> Validate(User user)
         {
-            if (EnumExtensions.GetDisplayName(DestinationType.Topic) == p[0])
-                throw new GenericApiException("Invalid operation destination type. Use 'queue' instead");
+            if (!HttpUtil.IsValidEmail(user.emailAddress))
+                throw new GenericApiException($"Email [{user.emailAddress}] is not valid");
 
-            if (!HttpUtil.IsValidEmail(u.emailAddress))
-                throw new GenericApiException($"Email [{u.emailAddress}] is not valid");
+            if (!ValidationUtil.IsValidPhoneNumber(user.phoneNumber))
+                throw new GenericApiException($"Phone number [{user.phoneNumber}] is not valid");
 
-            if (!ValidationUtil.IsValidPhoneNumber(u.phoneNumber))
-                throw new GenericApiException($"Phone number [{u.phoneNumber}] is not valid");
+            await Task.CompletedTask;
+
+            return user;
         }
     }
 }

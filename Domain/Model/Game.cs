@@ -4,7 +4,7 @@ using System;
 
 namespace GameProducer.Domain.Model
 {
-    public class Game : BasePayload
+    public class Game : BasePublishPayload
     {
         public override string type { get; set; } = "game";
         public long externalId { get; set; }

@@ -27,12 +27,12 @@ namespace GameProducer.Interfaces.Clients.Http
             _HttpClient = _HttpClientFactory.CreateClient(ClientName);
         }
 
-        public async Task<HttpResponseMessage> FetchNextReleaseDates()
+        public async Task<HttpResponseMessage> FetchGameReleases(DateTime StartDate, DateTime? EndDate)
         {
             _logger.LogInformation($"Starting to fetch IGDB Api...");
             var IGDBSection = _config.GetSection("Integration:IGDB");
 
-            var Body = BuildNextReleaseGamesRequestBody();
+            var Body = BuildRequestBody(StartDate, EndDate);
             var Address = $"{IGDB_BASE_ADDRESS}{IGDBSection["EndpointReleaseDates"]}";
             var request = new HttpRequestMessage
             {
@@ -49,11 +49,10 @@ namespace GameProducer.Interfaces.Clients.Http
             return response;
         }
 
-        private string BuildNextReleaseGamesRequestBody()
+        private string BuildRequestBody(DateTime StartDate, DateTime? EndDate)
         {
-            var From = DateTime.Now;
-            var To = DateTimeUtil.GetNextWeekday(From, DayOfWeek.Monday);
-            var UnixTimeStampFrom = DateTimeUtil.FromDateTimeToUnixTimeStamp(From);
+            var To = EndDate ?? DateTime.Now;
+            var UnixTimeStampFrom = DateTimeUtil.FromDateTimeToUnixTimeStamp(StartDate);
             var UnixTimeStampTo = DateTimeUtil.FromDateTimeToUnixTimeStamp(To);
 
             var IGDBSection = _config.GetSection("Integration:IGDB");

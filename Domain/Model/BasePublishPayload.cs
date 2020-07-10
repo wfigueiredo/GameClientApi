@@ -1,6 +1,6 @@
 ﻿namespace GameProducer.Domain.Model
 {
-    public class BasePayload
+    public class BasePublishPayload
     {
         public virtual string type { get; set; }
     }

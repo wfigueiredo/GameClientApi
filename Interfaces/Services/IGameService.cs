@@ -8,6 +8,6 @@ namespace GameProducer.Interfaces.Services
 {
     public interface IGameService
     {
-        Task<IEnumerable<Game>> fetchWeekGameReleases();
+        Task<IEnumerable<Game>> fetchGameReleases(DateTime StartDate, DateTime EndDate);
     }
 }

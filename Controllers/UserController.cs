@@ -1,9 +1,14 @@
-﻿using GameProducer.Domain.Infrastructure;
+﻿using GameProducer.Domain.DTO.User;
+using GameProducer.Domain.Enum;
+using GameProducer.Domain.Infrastructure;
 using GameProducer.Domain.Model;
+using GameProducer.Domain.Translators;
+using GameProducer.Infrastructure.Extensions;
 using GameProducer.Interfaces.Error;
-using GameProducer.Interfaces.Strategy;
-using GameProducer.Interfaces.Validators;
+using GameProducer.Interfaces.Services;
+using GameProducer.Interfaces.Services.Impl;
 using GameProducer.Util;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,31 +18,84 @@ using System.Threading.Tasks;
 
 namespace GameProducer.Controllers
 {
-    [Route("")]
+    [Authorize]
+    [Route("api/publisherapi/v1")]
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
-        private readonly PublishStrategyContext _publishStrategyContext;
-        private readonly IValidator<User> _validator;
+        private readonly IUserService _userService;
+        private readonly ILoginService _loginService;
 
-        public UserController(ILogger<UserController> logger, PublishStrategyContext publishStrategyContext, IValidator<User> validator)
+        public UserController(ILogger<UserController> logger, IUserService userService, ILoginService loginService)
         {
             _logger = logger;
-            _publishStrategyContext = publishStrategyContext;
-            _validator = validator;
+            _userService = userService;
+            _loginService = loginService;
         }
 
-        [HttpPost("user/publish")]
+        [AllowAnonymous]
+        [HttpPost("user/authenticate")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        public async Task<IActionResult> PublishInfo([FromBody] PublishRequest<User> publishRequest)
+        public async Task<IActionResult> Authenticate([FromBody] UserDto credentials)
         {
             try
             {
-                var User = Enumerable.ToList(publishRequest.content).FirstOrDefault();
-                _validator.Validate(User, publishRequest.metadata.destinationType.GetDisplayName());
-                await _publishStrategyContext.Apply(publishRequest);
-                return StatusCode(StatusCodes.Status202Accepted, new { message = "Message(s) in transit" });
+                var user = _userService.FindByUsernameAndSecret(credentials.username, credentials.secret);
+                if (user == null)
+                    return NotFound(new { message = "Invalid username or password" });
+
+                return Ok(new UserDto()
+                {
+                    username = user.username,
+                    role = user.role,
+                    token = _loginService.generateJwtToken(user.Id, user.role.GetDisplayName())
+                });
+            }
+            catch (GenericApiException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Unauthorized(new { message = "Operation error", reason = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Internal error on Authentication process", reason = ex.Message });
+            }
+        }
+
+        [AuthorizeRoles(RoleTypeDesc.Root, RoleTypeDesc.Admin)]
+        [HttpGet("users")]
+        [Produces("application/json")]
+        public async Task<IActionResult> FindAll()
+        {
+            try
+            {
+                var userId = int.Parse(User.Identity.Name);
+                var user = _userService.FindById(userId);
+                //bool isRoot = User.IsInRole(RoleTypeDesc.Root);
+
+                var userList = _userService.FindUsers(user.role);
+                if (!userList.Any())
+                    return NotFound();
+
+                return Ok(userList.ToDto());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Internal error on User list", reason = ex.Message });
+            }
+        }
+
+        [AuthorizeRoles(RoleTypeDesc.Root, RoleTypeDesc.Admin)]
+        [HttpPost("user")]
+        [Consumes("application/json")]
+        public async Task<IActionResult> Create([FromBody] UserDto dto)
+        {
+            try
+            {
+                return Created("api/publisherapi/v1/user", dto);
             }
             catch (GenericApiException ex)
             {

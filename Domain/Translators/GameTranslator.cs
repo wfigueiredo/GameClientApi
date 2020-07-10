@@ -8,7 +8,7 @@ using GameProducer.Infrastructure.Extensions;
 
 namespace GameProducer.Domain.Translators
 {
-    public static class EntityTranslator
+    public static class GameTranslator
     {
         public static Game ToDomain(this IGDBNextGameRelease release)
         {

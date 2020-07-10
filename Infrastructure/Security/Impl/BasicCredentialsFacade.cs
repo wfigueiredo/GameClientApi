@@ -1,39 +1,40 @@
-﻿using GameProducer.Infrastructure.Contracts;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using SecretsManagerFacadeLib.Contracts;
+using SecretsManagerFacadeLib.Interfaces;
 
 namespace GameProducer.Infrastructure.Security.Impl
 {
-    public class DBCredentialsFacade : ICredentialsFacade<DBCredentials>
+    public class BasicCredentialsFacade : ICredentialsFacade<BasicCredentials>
     {
         private readonly ISecretsManagerFacade _secretsManager;
         private readonly IConfiguration _config;
 
-        public DBCredentialsFacade(ISecretsManagerFacade secretsManager, IConfiguration config)
+        public BasicCredentialsFacade(ISecretsManagerFacade secretsManager, IConfiguration config)
         {
             _secretsManager = secretsManager;
             _config = config;
         }
 
-        public DBCredentials GetCredentials()
+        public BasicCredentials GetCredentials()
         {
             return GetFromAppsettings() ?? GetFromSecretsManagerAsync();
         }
 
-        private DBCredentials GetFromAppsettings()
+        private BasicCredentials GetFromAppsettings()
         {
             var postgresConfig = _config.GetSection("PostgreSQL");
             
-            return new DBCredentials
+            return new BasicCredentials
             {
                 Username = postgresConfig["username"],
                 Password = postgresConfig["password"]
             };
         }
 
-        private DBCredentials GetFromSecretsManagerAsync()
+        private BasicCredentials GetFromSecretsManagerAsync()
         {
             var SecretId = _config.GetValue<string>("SecretsManager");
-            return _secretsManager.GetObjectProperty<DBCredentials>(SecretId);
+            return _secretsManager.GetObjectProperty<BasicCredentials>(SecretId);
         }
     }
 }

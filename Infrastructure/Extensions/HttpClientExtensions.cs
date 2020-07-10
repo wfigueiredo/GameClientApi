@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
+using SecretsManagerFacadeLib.Interfaces;
 using System;
 using System.Net.Http;
 
@@ -12,13 +13,23 @@ namespace GameProducer.Infrastructure.Extensions
         public static IHttpClientBuilder AddIGDBClient(this IServiceCollection @this, IConfiguration config) 
             => @this.AddHttpClient<HttpClient>(name: "IGDBClient", (serviceProvider, options) =>
         {
-            var smc = serviceProvider.GetService<ISecretsManagerFacade>();
+            var smf = serviceProvider.GetService<ISecretsManagerFacade>();
             var IGDBSection = config.GetSection("Integration:IGDB");
-            var ApiKey = GetApiKey(IGDBSection, smc);
+            var ApiKey = GetApiKey(IGDBSection, smf);
             
             options.BaseAddress = new Uri(IGDBSection["Host"]);
             options.DefaultRequestHeaders.Add("user-key", ApiKey);
         })
+        .AddTransientHttpErrorPolicy(configure => configure.WaitAndRetryAsync(retryCount: 10, retryAttempt =>
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+        ));
+
+        public static IHttpClientBuilder AddPublisherApiClient(this IServiceCollection @this, IConfiguration config)
+            => @this.AddHttpClient<HttpClient>(name: "NotificationApiClient", (serviceProvider, options) =>
+            {
+                var IGDBSection = config.GetSection("Integration:NotificationApi");
+                options.BaseAddress = new Uri(IGDBSection["Host"]);
+            })
         .AddTransientHttpErrorPolicy(configure => configure.WaitAndRetryAsync(retryCount: 10, retryAttempt =>
             TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
         ));
