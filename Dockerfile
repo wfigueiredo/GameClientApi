@@ -14,4 +14,4 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENV TZ=America/Sao_Paulo
-ENTRYPOINT ["dotnet", "GameProducer.dll"]
+ENTRYPOINT ["dotnet", "GameClientApi.dll"]
