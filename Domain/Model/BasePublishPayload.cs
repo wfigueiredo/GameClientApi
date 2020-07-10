@@ -1,4 +1,4 @@
-﻿namespace GameProducer.Domain.Model
+﻿namespace GameClientApi.Domain.Model
 {
     public class BasePublishPayload
     {

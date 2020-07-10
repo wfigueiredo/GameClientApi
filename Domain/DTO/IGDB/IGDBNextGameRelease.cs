@@ -1,4 +1,4 @@
-﻿namespace GameProducer.Domain.DTO
+﻿namespace GameClientApi.Domain.DTO
 {
     public class IGDBNextGameRelease
     {

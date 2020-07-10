@@ -1,12 +1,12 @@
-using GameProducer.Domain.Model;
-using GameProducer.Infrastructure.Extensions;
-using GameProducer.Infrastructure.Security.Impl;
-using GameProducer.Interfaces.Clients.Http;
-using GameProducer.Interfaces.Repository;
-using GameProducer.Interfaces.Repository.Impl;
-using GameProducer.Interfaces.Services;
-using GameProducer.Interfaces.Services.Impl;
-using GameProducer.Interfaces.Validators;
+using GameClientApi.Domain.Model;
+using GameClientApi.Infrastructure.Extensions;
+using GameClientApi.Infrastructure.Security.Impl;
+using GameClientApi.Interfaces.Clients.Http;
+using GameClientApi.Interfaces.Repository;
+using GameClientApi.Interfaces.Repository.Impl;
+using GameClientApi.Interfaces.Services;
+using GameClientApi.Interfaces.Services.Impl;
+using GameClientApi.Interfaces.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +27,7 @@ using SecretsManagerFacadeLib.Interfaces.Impl;
 using System;
 using System.Text;
 
-namespace GameProducer
+namespace GameClientApi
 {
     public class Startup
     {

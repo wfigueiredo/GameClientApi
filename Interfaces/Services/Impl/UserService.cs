@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using GameProducer.Domain.Enum;
-using GameProducer.Domain.Model;
-using GameProducer.Interfaces.Repository;
-using GameProducer.Util;
+using GameClientApi.Domain.Enum;
+using GameClientApi.Domain.Model;
+using GameClientApi.Interfaces.Repository;
+using GameClientApi.Util;
 using Microsoft.IdentityModel.Tokens;
 
-namespace GameProducer.Interfaces.Services.Impl
+namespace GameClientApi.Interfaces.Services.Impl
 {
     public class UserService : IUserService
     {

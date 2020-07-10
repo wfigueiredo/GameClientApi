@@ -1,6 +1,6 @@
-﻿using GameProducer.Domain.Enum;
+﻿using GameClientApi.Domain.Enum;
 
-namespace GameProducer.Domain.Model
+namespace GameClientApi.Domain.Model
 {
     public class User : BasePublishPayload
     {

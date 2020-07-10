@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GameProducer.Domain.Enum
+namespace GameClientApi.Domain.Enum
 {
     public enum RoleType
     {

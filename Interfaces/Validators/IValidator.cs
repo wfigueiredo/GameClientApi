@@ -1,7 +1,7 @@
-﻿using GameProducer.Domain.Model;
+﻿using GameClientApi.Domain.Model;
 using System.Threading.Tasks;
 
-namespace GameProducer.Interfaces.Validators
+namespace GameClientApi.Interfaces.Validators
 {
     public interface IValidator<T>
     {

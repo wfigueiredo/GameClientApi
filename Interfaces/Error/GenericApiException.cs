@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameProducer.Interfaces.Error
+namespace GameClientApi.Interfaces.Error
 {
     [Serializable()]
     public class GenericApiException : Exception

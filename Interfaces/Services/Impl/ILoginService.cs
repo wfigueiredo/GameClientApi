@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GameProducer.Interfaces.Services.Impl
+namespace GameClientApi.Interfaces.Services.Impl
 {
     public interface ILoginService
     {

@@ -1,4 +1,4 @@
-﻿using GameProducer.Util;
+﻿using GameClientApi.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameProducer.Interfaces.Clients.Http
+namespace GameClientApi.Interfaces.Clients.Http
 {
     public class IGDBClient
     {

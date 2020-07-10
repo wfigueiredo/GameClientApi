@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameProducer.Interfaces.Services.Impl
+namespace GameClientApi.Interfaces.Services.Impl
 {
     public class LoginService : ILoginService
     {

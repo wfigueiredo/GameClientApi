@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace GameProducer.Util
+namespace GameClientApi.Util
 {
     public static class DateTimeUtil
     {

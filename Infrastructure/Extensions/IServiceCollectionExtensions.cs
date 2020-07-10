@@ -5,7 +5,7 @@ using SecretsManagerFacadeLib.Contracts;
 using SecretsManagerFacadeLib.Interfaces;
 using System;
 
-namespace GameProducer.Infrastructure.Extensions
+namespace GameClientApi.Infrastructure.Extensions
 {
     public static class IServiceCollectionExtensions
     {

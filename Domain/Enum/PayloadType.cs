@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GameProducer.Domain.Enum
+namespace GameClientApi.Domain.Enum
 {
     public enum PayloadType
     {

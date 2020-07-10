@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GameProducer.Domain.DTO;
-using GameProducer.Domain.Model;
-using GameProducer.Domain.Translators;
-using GameProducer.Interfaces.Clients.Http;
-using GameProducer.Interfaces.Error;
+using GameClientApi.Domain.DTO;
+using GameClientApi.Domain.Model;
+using GameClientApi.Domain.Translators;
+using GameClientApi.Interfaces.Clients.Http;
+using GameClientApi.Interfaces.Error;
 using Newtonsoft.Json;
 
-namespace GameProducer.Interfaces.Services.Impl
+namespace GameClientApi.Interfaces.Services.Impl
 {
     public class GameService : IGameService
     {

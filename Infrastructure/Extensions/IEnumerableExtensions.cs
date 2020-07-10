@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameProducer.Infrastructure.Extensions
+namespace GameClientApi.Infrastructure.Extensions
 {
     public static class IEnumerableExtensions
     {

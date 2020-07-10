@@ -1,12 +1,12 @@
-﻿using GameProducer.Util;
+﻿using GameClientApi.Util;
 using System.Collections.Generic;
 using System.Linq;
-using GameProducer.Domain.DTO;
-using GameProducer.Domain.Model;
-using GameProducer.Domain.Enum;
-using GameProducer.Infrastructure.Extensions;
+using GameClientApi.Domain.DTO;
+using GameClientApi.Domain.Model;
+using GameClientApi.Domain.Enum;
+using GameClientApi.Infrastructure.Extensions;
 
-namespace GameProducer.Domain.Translators
+namespace GameClientApi.Domain.Translators
 {
     public static class GameTranslator
     {

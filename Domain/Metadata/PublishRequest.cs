@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GameProducer.Domain.Infrastructure
+namespace GameClientApi.Domain.Infrastructure
 {
     public class PublishRequest<T>
     {

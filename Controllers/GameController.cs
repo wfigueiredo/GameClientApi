@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GameProducer.Interfaces.Error;
-using GameProducer.Interfaces.Services;
+using GameClientApi.Interfaces.Error;
+using GameClientApi.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace GameProducer.Controllers
+namespace GameClientApi.Controllers
 {
     [Route("api/gameclient/v1")]
     public class GameController : Controller

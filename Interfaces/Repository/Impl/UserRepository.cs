@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using GameProducer.Domain.Enum;
-using GameProducer.Domain.Model;
-using GameProducer.Util;
+using GameClientApi.Domain.Enum;
+using GameClientApi.Domain.Model;
+using GameClientApi.Util;
 
-namespace GameProducer.Interfaces.Repository.Impl
+namespace GameClientApi.Interfaces.Repository.Impl
 {
     public class UserRepository : IUserRepository
     {

@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace GameProducer.Util
+namespace GameClientApi.Util
 {
     public class HttpUtil
 

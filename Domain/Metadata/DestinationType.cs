@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace GameProducer.Domain.Infrastructure
+namespace GameClientApi.Domain.Infrastructure
 {
     public enum DestinationType
     {

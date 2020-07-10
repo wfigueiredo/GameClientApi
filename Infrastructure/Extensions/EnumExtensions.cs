@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace GameProducer.Util
+namespace GameClientApi.Util
 {
     public static class EnumExtensions
     {

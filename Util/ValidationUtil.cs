@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace GameProducer.Util
+namespace GameClientApi.Util
 {
     public class ValidationUtil
     {

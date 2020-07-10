@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GameProducer.Infrastructure.Extensions
+namespace GameClientApi.Infrastructure.Extensions
 {
     public class AuthorizeRolesAttribute : AuthorizeAttribute
     {

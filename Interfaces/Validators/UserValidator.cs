@@ -1,10 +1,10 @@
-﻿using GameProducer.Domain.Infrastructure;
-using GameProducer.Domain.Model;
-using GameProducer.Interfaces.Error;
-using GameProducer.Util;
+﻿using GameClientApi.Domain.Infrastructure;
+using GameClientApi.Domain.Model;
+using GameClientApi.Interfaces.Error;
+using GameClientApi.Util;
 using System.Threading.Tasks;
 
-namespace GameProducer.Interfaces.Validators
+namespace GameClientApi.Interfaces.Validators
 {
     public class UserValidator : IValidator<User>
     {

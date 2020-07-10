@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace GameProducer.Domain.Enum
+namespace GameClientApi.Domain.Enum
 {
     public enum ConsoleType
     {

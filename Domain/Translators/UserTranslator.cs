@@ -1,11 +1,11 @@
-﻿using GameProducer.Domain.DTO.User;
-using GameProducer.Domain.Model;
+﻿using GameClientApi.Domain.DTO.User;
+using GameClientApi.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GameProducer.Domain.Translators
+namespace GameClientApi.Domain.Translators
 {
     public static class UserTranslator
     {

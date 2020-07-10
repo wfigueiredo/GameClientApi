@@ -9,7 +9,7 @@
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "GameProducer": {
+    "GameClientApi": {
       "commandName": "Project",
       "launchUrl": "weatherforecast",
       "environmentVariables": {

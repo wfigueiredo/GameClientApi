@@ -1,4 +1,4 @@
-﻿using GameProducer.Infrastructure.Security;
+﻿using GameClientApi.Infrastructure.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -6,7 +6,7 @@ using SecretsManagerFacadeLib.Interfaces;
 using System;
 using System.Net.Http;
 
-namespace GameProducer.Infrastructure.Extensions
+namespace GameClientApi.Infrastructure.Extensions
 {
     public static class HttpClientExtensions
     {

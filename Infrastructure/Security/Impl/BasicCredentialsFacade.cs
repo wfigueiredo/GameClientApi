@@ -2,7 +2,7 @@
 using SecretsManagerFacadeLib.Contracts;
 using SecretsManagerFacadeLib.Interfaces;
 
-namespace GameProducer.Infrastructure.Security.Impl
+namespace GameClientApi.Infrastructure.Security.Impl
 {
     public class BasicCredentialsFacade : ICredentialsFacade<BasicCredentials>
     {

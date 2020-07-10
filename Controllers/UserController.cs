@@ -1,13 +1,13 @@
-﻿using GameProducer.Domain.DTO.User;
-using GameProducer.Domain.Enum;
-using GameProducer.Domain.Infrastructure;
-using GameProducer.Domain.Model;
-using GameProducer.Domain.Translators;
-using GameProducer.Infrastructure.Extensions;
-using GameProducer.Interfaces.Error;
-using GameProducer.Interfaces.Services;
-using GameProducer.Interfaces.Services.Impl;
-using GameProducer.Util;
+﻿using GameClientApi.Domain.DTO.User;
+using GameClientApi.Domain.Enum;
+using GameClientApi.Domain.Infrastructure;
+using GameClientApi.Domain.Model;
+using GameClientApi.Domain.Translators;
+using GameClientApi.Infrastructure.Extensions;
+using GameClientApi.Interfaces.Error;
+using GameClientApi.Interfaces.Services;
+using GameClientApi.Interfaces.Services.Impl;
+using GameClientApi.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +16,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GameProducer.Controllers
+namespace GameClientApi.Controllers
 {
     [Authorize]
     [Route("api/publisherapi/v1")]
