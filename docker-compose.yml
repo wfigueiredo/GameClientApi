@@ -11,12 +11,3 @@ services:
       dockerfile: ./Dockerfile
     ports:
      - "5000:80"
-    networks:
-      - services-network
-    
-networks:
-  services-network:
-    driver: bridge
-    
-volumes:  
-  postgres_data:

@@ -1,3 +1,4 @@
+using Amazon;
 using GameClientApi.Domain.Model;
 using GameClientApi.Infrastructure.Extensions;
 using GameClientApi.Infrastructure.Security.Impl;
@@ -107,20 +108,8 @@ namespace GameClientApi
             services.AddSingleton<IValidator<User>, UserValidator>();
 
             // clients (singleton)
-            services.AddSingleton<ISecretsManagerClient, SecretsManagerClient>(x =>
-            {
-                var region = "sa-east-1";
-                var loggerFactory = LoggerFactory.Create(builder =>
-                {
-                    builder
-                    .AddFilter("Microsoft", LogLevel.Warning)
-                    .AddFilter("System", LogLevel.Warning)
-                    .AddConsole()
-                    .AddEventLog();
-                });
-                var logger = loggerFactory.CreateLogger<SecretsManagerClient>();
-                return new SecretsManagerClient(region, logger);
-            });
+            services.AddSingleton(RegionEndpoint.SAEast1);
+            services.AddSingleton<ISecretsManagerClient, SecretsManagerClient>();
             services.AddSingleton<PublisherClient>();
             services.AddSingleton<IGDBClient>();
         }
