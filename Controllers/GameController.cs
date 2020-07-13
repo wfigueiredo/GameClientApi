@@ -27,13 +27,14 @@ namespace GameClientApi.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetReleases(
             [FromQuery] DateTime startDate, 
-            [FromQuery] DateTime endDate,
+            [FromQuery] DateTime? endDate,
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int maxResults = 100)
         {
             try
             {
-                var nextReleases = await _gameService.fetchGameReleases(startDate, endDate);
+                var nextReleases = await _gameService.fetchGameReleases(startDate, endDate, maxResults);
                 return Ok(nextReleases);
             }
             catch (GenericApiException ex)

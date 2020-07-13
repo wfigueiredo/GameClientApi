@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
+using SecretsManagerFacadeLib.Contracts;
 using SecretsManagerFacadeLib.Interfaces;
 using System;
 using System.Net.Http;

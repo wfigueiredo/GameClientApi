@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,12 +28,12 @@ namespace GameClientApi.Interfaces.Clients.Http
             _HttpClient = _HttpClientFactory.CreateClient(ClientName);
         }
 
-        public async Task<HttpResponseMessage> FetchGameReleases(DateTime StartDate, DateTime? EndDate)
+        public async Task<HttpResponseMessage> FetchGameReleases(DateTime StartDate, DateTime? EndDate, int maxResults)
         {
-            _logger.LogInformation($"Starting to fetch IGDB Api...");
+            _logger.LogInformation($"Fetching IGDB Api...");
             var IGDBSection = _config.GetSection("Integration:IGDB");
 
-            var Body = BuildRequestBody(StartDate, EndDate);
+            var Body = BuildRequestBody(StartDate, EndDate, maxResults);
             var Address = $"{IGDB_BASE_ADDRESS}{IGDBSection["EndpointReleaseDates"]}";
             var request = new HttpRequestMessage
             {
@@ -44,25 +45,35 @@ namespace GameClientApi.Interfaces.Clients.Http
             var response = await _HttpClient.SendAsync(request).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
-            _logger.LogInformation($"Successfully fetched information from IGDB API");
-
             return response;
         }
 
-        private string BuildRequestBody(DateTime StartDate, DateTime? EndDate)
+        private string BuildRequestBody(DateTime StartDate, DateTime? EndDate, int maxResults)
         {
             var To = EndDate ?? DateTime.Now;
             var UnixTimeStampFrom = DateTimeUtil.FromDateTimeToUnixTimeStamp(StartDate);
             var UnixTimeStampTo = DateTimeUtil.FromDateTimeToUnixTimeStamp(To);
 
             var IGDBSection = _config.GetSection("Integration:IGDB");
-            var Query = $"fields game, game.name, game.summary, game.involved_companies.publisher, " +
-                $"game.involved_companies.company.name, date, human, platform.name, platform.abbreviation; " +
-                $"where platform = ({IGDBSection["ExternalIds:PlayStation"]},{IGDBSection["ExternalIds:Xbox"]},{IGDBSection["ExternalIds:Switch"]}) & " +
+            var Query = $"fields " +
+                $"game, " +
+                $"game.name, " +
+                $"game.summary, " +
+                $"game.involved_companies.publisher, " +
+                $"game.involved_companies.company.name, " +
+                $"date, " +
+                $"human, " +
+                $"platform.name, " +
+                $"platform.abbreviation; " +
+                $"where platform = (" +
+                $"{IGDBSection["ExternalIds:PlayStation"]}," +
+                $"{IGDBSection["ExternalIds:Xbox"]}," +
+                $"{IGDBSection["ExternalIds:Switch"]}" +
+                $") & " +
                 $"date >= {UnixTimeStampFrom} & date < {UnixTimeStampTo} & " +
                 $"category = {IGDBSection["ExternalIds:ConsolePlatform"]}; " +
                 $"sort date asc;" +
-                $"limit {IGDBSection["MaxResults"]};";
+                $"limit {maxResults};";
             
             return Query;
         }

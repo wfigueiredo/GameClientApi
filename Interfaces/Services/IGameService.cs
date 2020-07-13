@@ -8,6 +8,6 @@ namespace GameClientApi.Interfaces.Services
 {
     public interface IGameService
     {
-        Task<IEnumerable<Game>> fetchGameReleases(DateTime StartDate, DateTime EndDate);
+        Task<IEnumerable<Game>> fetchGameReleases(DateTime StartDate, DateTime? EndDate, int maxResults);
     }
 }
