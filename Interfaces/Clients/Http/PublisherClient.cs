@@ -29,18 +29,18 @@ namespace PublisherApi.Interfaces.Clients.Http
 
         public async Task<HttpResponseMessage> PublishMessage<TMessage>(TMessage message)
         {
-            _logger.LogInformation($"Starting HTTP call to Publisher Api...");
+            _logger.LogInformation($"Starting HTTP call to NotificationApi...");
             
             var Json = JsonConvert.SerializeObject(message);
             var Content = new StringContent(Json, Encoding.UTF8, "application/json");
 
-            var integrationSection = _config.GetSection("Integration:PublisherApi");
+            var integrationSection = _config.GetSection("Integration:NotificationApi");
             var Address = $"{integrationSection["Host"]}{integrationSection["Endpoint"]}";
 
             var response = await _HttpClient.PostAsync(new Uri(Address), Content);
             response.EnsureSuccessStatusCode();
 
-            _logger.LogInformation($"Integration successful with Publisher Api");
+            _logger.LogInformation($"Integration successful with NotificationApi");
 
             return response;
         }

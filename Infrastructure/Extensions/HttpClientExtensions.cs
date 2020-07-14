@@ -1,5 +1,4 @@
-﻿using GameClientApi.Infrastructure.Security;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using SecretsManagerFacadeLib.Contracts;

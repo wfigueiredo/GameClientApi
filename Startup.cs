@@ -1,21 +1,15 @@
 using Amazon;
 using GameClientApi.Domain.Model;
 using GameClientApi.Infrastructure.Extensions;
-using GameClientApi.Infrastructure.Security.Impl;
 using GameClientApi.Interfaces.Clients.Http;
-using GameClientApi.Interfaces.Repository;
-using GameClientApi.Interfaces.Repository.Impl;
 using GameClientApi.Interfaces.Services;
 using GameClientApi.Interfaces.Services.Impl;
 using GameClientApi.Interfaces.Validators;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -25,8 +19,6 @@ using SecretsManagerFacadeLib.Interfaces;
 using SecretsManagerFacadeLib.Interfaces.Clients;
 using SecretsManagerFacadeLib.Interfaces.Clients.Impl;
 using SecretsManagerFacadeLib.Interfaces.Impl;
-using System;
-using System.Text;
 
 namespace GameClientApi
 {
@@ -52,32 +44,10 @@ namespace GameClientApi
             services.AddControllers();
             services.AddHealthChecks();
             services.AddHttpContextAccessor();
-            services.AddNpgsqlConnectionStringBuilder(_config);
+
+            // extensions
             services.AddIGDBClient(_config);
             services.AddPublisherApiClient(_config);
-
-            var securitySection = _config.GetSection("Security");
-            var encodedKey = Encoding.ASCII.GetBytes(securitySection["Token"]);
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(encodedKey),
-                    ValidIssuers = new string[] { securitySection["Issuer"] },
-                    ValidateAudience = false,
-                    RequireExpirationTime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
 
             services.AddMvc().AddNewtonsoftJson(options =>
             {
@@ -92,20 +62,13 @@ namespace GameClientApi
             
             // services (singleton)
             services.AddSingleton<IGameService, GameService>();
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<ILoginService, LoginService>();
-
-            // repositories
-            services.AddSingleton<IUserRepository, UserRepository>();
 
             // infra
-            services.AddSingleton<ICredentialsFacade<BasicCredentials>, BasicCredentialsFacade>();
             services.AddSingleton<ISecretsManagerFacade, SecretsManagerFacade>();
             services.AddSingleton<ICredentialsFacade<AwsCredentials>, AWSCredentialsFacade>();
 
             // validators (singleton)
             services.AddSingleton<IValidator<Game>, GameValidator>();
-            services.AddSingleton<IValidator<User>, UserValidator>();
 
             // clients (singleton)
             services.AddSingleton(RegionEndpoint.SAEast1);
@@ -115,7 +78,7 @@ namespace GameClientApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
