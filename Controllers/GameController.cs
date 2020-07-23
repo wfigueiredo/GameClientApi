@@ -2,15 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GameClientApi.Domain.DTO;
+using GameClientApi.Domain.Enum;
 using GameClientApi.Interfaces.Error;
 using GameClientApi.Interfaces.Services;
+using GameClientApi.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace GameClientApi.Controllers
 {
-    [Route("api/gameclient/v1")]
+    [Route("api/gameclient/v1/game")]
     public class GameController : Controller
     {
         private readonly ILogger<GameController> _logger;
@@ -22,7 +25,7 @@ namespace GameClientApi.Controllers
             _gameService = gameService;
         }
 
-        [HttpGet("game/releases")]
+        [HttpGet("releases")]
         [Consumes("application/json")]
         [Produces("application/json")]
         public async Task<IActionResult> GetReleases(
@@ -46,6 +49,28 @@ namespace GameClientApi.Controllers
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Internal error on Publisher API", reason =  ex.Message});
+            }
+        }
+
+        [HttpPost("releases/monthly-report")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        public async Task<IActionResult> GenerateMonthlyReleasesReport([FromBody] ReportDto reportDto)
+        {
+            try
+            {
+                await _gameService.ExportMonthlyReleases(reportDto);
+                return Accepted();
+            }
+            catch (GenericApiException ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(new { message = "Invalid request", reason = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Internal error on Publisher API", reason = ex.Message });
             }
         }
     }

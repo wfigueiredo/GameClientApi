@@ -5,6 +5,9 @@ namespace GameClientApi.Util
 {
     public static class DateTimeUtil
     {
+        public const string DATE_TIME_TZ_FORMAT = "yyyy-MM-ddTHH:mm:ss";
+        public const string DATE_TIME_TIMESTAMPED_LABEL_FORMAT = "yyyyMMdd-HHmmss";
+
         public const string TIMEZONE_WINDOWS_SOUTH_AMERICA = "E. South America Standard Time";
         public const string TIMEZONE_UNIX_SOUTH_AMERICA = "America/Sao_Paulo";
         public static TimeZoneInfo TARGET_TIMEZONE => GetTargetTimeZone();
@@ -30,6 +33,11 @@ namespace GameClientApi.Util
         public static DateTime GetDateTimeConvertedIntoDefaultTimeZone(DateTime dateTime)
         {
             return TimeZoneInfo.ConvertTime(dateTime, TARGET_TIMEZONE);
+        }
+
+        public static string ConvertToString(DateTime dt, string pattern)
+        {
+            return dt.ToString(pattern);
         }
 
         public static TimeZoneInfo GetTargetTimeZone()

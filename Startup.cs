@@ -62,6 +62,7 @@ namespace GameClientApi
             
             // services (singleton)
             services.AddSingleton<IGameService, GameService>();
+            services.AddSingleton<IFileService, FileService>();
 
             // infra
             services.AddSingleton<ISecretsManagerFacade, SecretsManagerFacade>();
