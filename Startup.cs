@@ -5,6 +5,8 @@ using GameClientApi.Interfaces.Clients.Http;
 using GameClientApi.Interfaces.Services;
 using GameClientApi.Interfaces.Services.Impl;
 using GameClientApi.Interfaces.Validators;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -44,6 +46,10 @@ namespace GameClientApi
             services.AddControllers();
             services.AddHealthChecks();
             services.AddHttpContextAccessor();
+            services.AddHangfire(options =>
+            {
+                options.UseMemoryStorage();
+            });
 
             // extensions
             services.AddIGDBClient(_config);
@@ -86,6 +92,7 @@ namespace GameClientApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHangfireServer();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();

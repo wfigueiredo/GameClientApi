@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="15.0.5" />
+    <PackageReference Include="HangFire" Version="1.7.11" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
     <PackageReference Include="SecretsManagerFacadeLib" Version="1.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.6.0" />

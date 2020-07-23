@@ -7,6 +7,7 @@ using GameClientApi.Domain.Model;
 using GameClientApi.Domain.Translators;
 using GameClientApi.Interfaces.Clients.Http;
 using GameClientApi.Interfaces.Error;
+using Hangfire;
 using Newtonsoft.Json;
 
 namespace GameClientApi.Interfaces.Services.Impl
@@ -36,10 +37,14 @@ namespace GameClientApi.Interfaces.Services.Impl
             return result.ToDomainList();
         }
 
-        public async Task ExportMonthlyReleases(ReportDto reportDto)
+        public Task ExportMonthlyReleases(ReportDto reportDto)
         {
-            // ##### TODO: process this call chain in hangfire background task... ######
+            BackgroundJob.Enqueue(() => ProcessExportInBackground(reportDto));
+            return Task.CompletedTask;
+        }
 
+        public async Task ProcessExportInBackground(ReportDto reportDto)
+        {
             var Now = DateTime.Now;
             var StartDate = new DateTime(Now.Year, Now.Month, 1);
             var nextReleases = await fetchGameReleases(StartDate, Now, reportDto.maxResults);
