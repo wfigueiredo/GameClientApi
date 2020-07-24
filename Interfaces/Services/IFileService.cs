@@ -7,6 +7,7 @@ namespace GameClientApi.Interfaces.Services
 {
     public interface IFileService
     {
-        Task GenerateCsvFile<T>(string fileName, IEnumerable<T> Content);
+        string GenerateCsvFile<T>(string fileName, IEnumerable<T> Content);
+        Task UploadToS3(string path);
     }
 }

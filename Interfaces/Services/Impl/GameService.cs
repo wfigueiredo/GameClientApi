@@ -48,10 +48,17 @@ namespace GameClientApi.Interfaces.Services.Impl
             var Now = DateTime.Now;
             var StartDate = new DateTime(Now.Year, Now.Month, 1);
             var nextReleases = await fetchGameReleases(StartDate, Now, reportDto.maxResults);
-            await ExportToFile(nextReleases, reportDto.fileExtension);
+            var filePath = ExportToFile(nextReleases, reportDto.fileExtension);
+            await _fileService.UploadToS3(filePath);
         }
 
-        public Task ExportToFile(IEnumerable<Game> Content, FileExtension fileExtension) => fileExtension switch
+        /// <summary>
+        /// Exports the desired content to a file, returning the path.
+        /// </summary>
+        /// <param name="Content"></param>
+        /// <param name="fileExtension"></param>
+        /// <returns></returns>
+        public string ExportToFile(IEnumerable<Game> Content, FileExtension fileExtension) => fileExtension switch
         {
             FileExtension.Csv => _fileService.GenerateCsvFile(FILE_NAME, Content),
             _ => throw new InvalidOperationException("Unknown file extension")

@@ -1,6 +1,7 @@
 using Amazon;
 using GameClientApi.Domain.Model;
 using GameClientApi.Infrastructure.Extensions;
+using GameClientApi.Interfaces.Clients.Aws;
 using GameClientApi.Interfaces.Clients.Http;
 using GameClientApi.Interfaces.Services;
 using GameClientApi.Interfaces.Services.Impl;
@@ -82,6 +83,7 @@ namespace GameClientApi
             services.AddSingleton<ISecretsManagerClient, SecretsManagerClient>();
             services.AddSingleton<PublisherClient>();
             services.AddSingleton<IGDBClient>();
+            services.AddSingleton<S3Client>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
